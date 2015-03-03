@@ -1,10 +1,10 @@
 /*
 	Plugin Name: NiftyFrog OG
-	Plugin URI: http://niftyfrog.com/
-	Description: Places Open Graph and Twitter Card meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or Twitter.
-	Version: 0.1
+	Plugin URI: http://niftyfrog.com/plugins/niftyfrog.php/
+	Description: Places meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or generating a Twitter Card.
+	Version: 0.2
 	Author: Michelle Thompson
-	Author URI: http://mthompsondev.com/
+	Author URI: http://niftyfrog.com/
 	License: GPLv3
 */
 

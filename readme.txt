@@ -1,10 +1,10 @@
 === NiftyFrog OG ===
 Contributors: misschell
 Tags: og, Twitter, Twitter Card, meta tags, Facebook, crossposting, Open Graph, crosspost, og:image
-Donate link: http://niftyfrog.com
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CZA4ZWJUVVZHN
 Requires at least: 3.4
 Tested up to: 4.1.1
-Stable tag: 0.1
+Stable tag: 0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -18,6 +18,8 @@ Instead of a random button from your sidebar being shown as the thumbnail, the f
 If you have written an excerpt for your post, the crosspost text is taken from this. If you haven't, it is taken from the post content.
 
 If you set your Facebook user ID in the plugin options, a meta tag will be created that lets Facebook know you are the admin for any Facebook apps/widgets/insights for the page.
+
+Requires WordPress 3.4 or above, and at least PHP 5
 
 = Note =
 This plugin has been written for, and tested on, single site installs, not multi-site.
@@ -58,5 +60,7 @@ Before cards will be created for links to your pages, you will have to request a
 3. Helper link or popup for finding numeric Facebook ID.
 
 == Changelog ==
+= 0.2 =
+* Fixed a line that made it sometimes not find post content.
 = 0.1 =
 * Initial version
