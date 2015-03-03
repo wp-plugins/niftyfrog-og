@@ -8,7 +8,7 @@ Stable tag: 0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Places Open Graph and Twitter Card meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or Twitter.
+Places meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or generating a Twitter Card.
 
 == Description ==
 Have you ever tried to crosspost from your blog to Facebook, only to find that Facebook stubbornly refuses to share the post with a relevant image? Or that the description is either missing, or from some other section of your page? This plugin places meta tags for Facebook and Twitter Cards in your blog's header, so that these services don't have to guess what to show as your crosspost.
