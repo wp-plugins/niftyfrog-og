@@ -23,7 +23,7 @@ If you set your Facebook user ID in the plugin options, a meta tag will be creat
 This plugin has been written for, and tested on, single site installs, not multi-site.
 
 == Installation ==
-1. Unzip the nfog-x-x.zip file, and upload the entire folder to your plugins directory (/wp-content/plugins/).
+1. Unzip the zip file, and upload the entire folder to your plugins directory (/wp-content/plugins/).
 2. Activate the NiftyFrog OG plugin in your WordPress dashboard.
 3. In the dashboard, go to Settings -> NF OG Options, and enter your Facebook numeric user id, Twitter ID, and the URL to your default image.
 
