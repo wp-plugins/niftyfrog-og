@@ -1,0 +1,33 @@
+/*
+	Plugin Name: NiftyFrog OG
+	Plugin URI: http://niftyfrog.com/plugins/niftyfrog.php/
+	Description: Places meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or generating a Twitter Card.
+	Version: 0.2
+	Author: Michelle Thompson
+	Author URI: http://niftyfrog.com/
+	License: GPLv3
+*/
+
+.nfadmincontainer {
+	max-width: 700px;
+}
+
+.nfoglabel {
+	font-weight: 600;
+	width: 17em;
+	float: left;
+}
+
+.nfogrow {
+	margin-top: 6px;
+	margin-bottom: 9px;
+	clear: both;
+}
+	
+.defaultimg {
+	border-width: 0;
+}
+
+.regfontwt {
+	font-weight: 500;
+}
