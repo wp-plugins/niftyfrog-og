@@ -4,7 +4,7 @@ Tags: og, Twitter, Twitter Card, meta tags, Facebook, crossposting, Open Graph, 
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CZA4ZWJUVVZHN
 Requires at least: 3.4
 Tested up to: 4.1.1
-Stable tag: 0.2
+Stable tag: 0.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -60,6 +60,8 @@ Before cards will be created for links to your pages, you will have to request a
 3. Helper link or popup for finding numeric Facebook ID.
 
 == Changelog ==
+= 0.3 =
+* Quotes don't break meta tags now.
 = 0.2 =
 * Fixed a line that made it sometimes not find post content.
 = 0.1 =

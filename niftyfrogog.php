@@ -3,7 +3,7 @@
 	Plugin Name: NiftyFrog OG
 	Plugin URI: http://niftyfrog.com/plugins/niftyfrog.php/
 	Description: Places meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or generating a Twitter Card.
-	Version: 0.2
+	Version: 0.3
 	Author: Michelle Thompson
 	Author URI: http://niftyfrog.com/
 	License: GPLv3
@@ -184,11 +184,11 @@ function print_meta_tags() {
 	else:		
 		print '<meta property="fb:admins" content="' . $nfog_fb_userid . "\" />\n";
 	endif;
-	print '<meta property="og:site_name" content="' . get_bloginfo('name') . "\" />\n";
-	print '<meta property="og:title" content="' . $nfog_title . "\" />\n";
+	print '<meta property="og:site_name" content="' . htmlentities( get_bloginfo('name'), ENT_COMPAT, 'UTF-8', FALSE ) . "\" />\n";
+	print '<meta property="og:title" content="' . htmlentities( $nfog_title, ENT_COMPAT, 'UTF-8', FALSE ) . "\" />\n";
 	print '<meta property="og:type" content="' . $nfog_type . "\" />\n";
 	print '<meta property="og:url" content="' . $nfog_url . "\" />\n";
-	print '<meta property="og:description" content="' . $nfog_descr . "\" />\n";
+	print '<meta property="og:description" content="' . htmlentities( $nfog_descr, ENT_COMPAT, 'UTF-8', FALSE ) . "\" />\n";
 	if ( $nfog_img === 'no' ):
 		print $no_img_msg . "\n";
 	else:
