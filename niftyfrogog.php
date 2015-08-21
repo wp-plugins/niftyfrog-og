@@ -3,7 +3,7 @@
 	Plugin Name: NiftyFrog OG
 	Plugin URI: http://niftyfrog.com/plugins/niftyfrog.php/
 	Description: Places meta tags in your blog's header, so a suitable image and description show, when crossposting to Facebook or generating a Twitter Card.
-	Version: 0.3
+	Version: 0.4
 	Author: Michelle Thompson
 	Author URI: http://niftyfrog.com/
 	License: GPLv3
@@ -11,18 +11,22 @@
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+// Keep track for running update functions
+if ( !defined( 'NFOG_VERSION_NUM' ) ):
+    define( 'NFOG_VERSION_NUM', '0.4' );
+endif;
+
 // Add admin menu item
 function nf_og_menu_item() {
 	$thispage = add_options_page( 'NiftyFrog OG Options', 'NF OG Options', 'manage_options', 'nf-og-options', 'nf_og_setup_screen' );
 	add_action( 'admin_print_styles-' . $thispage, 'admin_nf_styles' );
-	add_action( 'admin_print_scripts-' . $thispage, 'admin_nf_scripts' );
+	//add_action( 'admin_print_scripts-' . $thispage, 'admin_nf_scripts' );
 }
 
 // Enable options, and register css and js    
 function nf_og_options_init(){
 	register_setting( 'niftyfrogog', 'nfogoptions', 'check_input' );
 	wp_register_style( 'nfadminstyles', plugins_url('styles.css', __FILE__) );
-	wp_register_script( 'nfadminjs', plugins_url('nfadmin.js', __FILE__) );
 }
 
 // Delete options from DB
@@ -34,13 +38,25 @@ function nf_og_options_del(){
 function nf_og_options_undo(){
 	unregister_setting( 'niftyfrogog', 'nfogoptions', 'check_input' );
 	wp_dequeue_style( 'nfadminstyles' );
-	wp_dequeue_script( 'nfadminjs' );
 	wp_deregister_style( 'nfadminstyles' );
-	wp_deregister_script( 'nfadminjs' );
+}
+
+// Update options and dequeue and deregister unused scripts
+function nf_og_update_files() {
+	$options = get_option('nfogoptions');
+	if ( !isset( $options['nfogversion'] ) ):
+		$options = array_merge( $options, array( 'nfogversion' => NFOG_VERSION_NUM ) );
+		update_option( 'nfogoptions', $options );
+		wp_dequeue_script( 'nfadminjs' );
+		wp_deregister_script( 'nfadminjs' );
+	endif;
 }
 
 // Sanitize user form input
 function check_input( $input ){
+	// Format version number
+	$input['nfogversion'] = preg_replace("/[^0-9\.]/", "", $input['nfogversion']);
+	
 	// Strip tags, and make sure image url starts correctly
 	$this_def_img = trim( strip_tags( $input['defaultimg'] ) );
 	if ( preg_match( '~((http|https)://)(.+?)~', $this_def_img ) ):
@@ -77,26 +93,31 @@ function nf_og_setup_screen() {
 	print '<form method="post" action="options.php">';
 	settings_fields('niftyfrogog');
 	$options = get_option('nfogoptions');
+	
+	if ( isset( $options['nfogversion'] ) && $options['nfogversion'] === NFOG_VERSION_NUM ):
+		$nf_version = $options['nfogversion'];
+	else:
+		$nf_version = NFOG_VERSION_NUM;
+	endif;
 		
 	$fb_user_id = 'Facebook user ID not set';
-	if ( $options['fbuserid'] && $options['fbuserid'] !=='' && $options['fbuserid'] !== 'no' ):
+	if ( isset( $options['fbuserid'] ) && $options['fbuserid'] !=='' && $options['fbuserid'] !== 'no' ):
 		$fb_user_id = $options['fbuserid'];
 	endif;
 	
 	$twit_user_id = 'Twitter user ID not set';
-	if ( $options['twuserid'] && $options['twuserid'] !=='' && $options['twuserid'] !== 'no' ):
+	if ( isset( $options['twuserid'] ) && $options['twuserid'] !=='' && $options['twuserid'] !== 'no' ):
 		$twit_user_id = $options['twuserid'];
 	endif;
 	
 	$current_img = 'Default image not set';
 	$img_view_line = '';	
-	if ( $options['defaultimg'] && $options['defaultimg'] !== '' && $options['defaultimg'] !== 'no' ):
+	if ( isset( $options['defaultimg'] ) && $options['defaultimg'] !== '' && $options['defaultimg'] !== 'no' ):
 		$current_img = $options['defaultimg'];
 		$img_view_line = '<p>Current default image:<br /><img src="' . $current_img . '" title="Current Image" class="defaultimg" /></p>';
 	endif;	
 	
-	
-	print '<p>Enter your Facebook <em>numeric</em> user ID here. Facebook uses this information to determine who has access to page insights, and who can administer Facebook apps for your page. You can enter multiple ID&#39;s, separated by commas. <span id="findfbid">You can find your numeric Facebook ID by visiting http://graph.facebook.com/&lt;Your Username&gt;.</span></p>';
+	print '<p>Enter your Facebook <em>numeric</em> user ID here. Facebook uses this information to determine who has access to page insights, and who can administer Facebook apps for your page. You can enter multiple ID&#39;s, separated by commas. This plugin will generate image og tags with or without this.</p>';
 	print '<div class="nfogrow"><div class="nfoglabel">Your numeric Facebook ID:</div>';
 	print '<input type="text" name="nfogoptions[fbuserid]" value="' . $fb_user_id . '" size="33" onClick="this.setSelectionRange(0, this.value.length)" /></div>';	
 	print '<p>Enter your Twitter user ID here, without the "&#64;" sign. Twitter uses this information for card analytics.</p>';
@@ -104,7 +125,8 @@ function nf_og_setup_screen() {
 	print '<input type="text" name="nfogoptions[twuserid]" value="' . $twit_user_id . '" size="33" onClick="this.setSelectionRange(0, this.value.length)" /></div>';	
 	print '<p>The default image you specify here will be used in the meta tags that are created, if no featured image is set for, and no other image is found in, a post or page. Enter the full URL, beginning with http://, to your default image. Make sure the image size is at least 200px by 200px, so that Facebook will recognize it.</p>'; 
 	print '<div class="nfogrow"><div class="nfoglabel">Full URL to your default image:</div>';
-	print '<input type="text" name="nfogoptions[defaultimg]" value="' . $current_img . '" size="33" onClick="this.setSelectionRange(0, this.value.length)" /></div>';	
+	print '<input type="text" name="nfogoptions[defaultimg]" value="' . $current_img . '" size="33" onClick="this.setSelectionRange(0, this.value.length)" /></div>';
+	print '<input type="hidden" name="nfogoptions[nfogversion]" value="' . $nf_version . '" />';	
 	print '<div class="nfogrow"><input type="submit" value="Submit" /></div>';
 	print '</form>';
 	print $img_view_line;
@@ -117,11 +139,11 @@ function nf_og_setup_screen() {
 function print_meta_tags() {
 	$options = get_option('nfogoptions');
 	$nfog_fb_userid = 'no';
-	if ( $options['fbuserid'] && $options['fbuserid'] !== '' ):
+	if ( isset( $options['fbuserid'] ) && $options['fbuserid'] !== '' ):
 		$nfog_fb_userid = $options['fbuserid'];
 	endif;	
 	$nfog_tw_userid = 'no';
-	if ( $options['twuserid'] && $options['twuserid'] !== '' ):
+	if ( isset( $options['twuserid'] ) && $options['twuserid'] !== '' ):
 		$nfog_tw_userid = $options['twuserid'];
 	endif;		
 	$nfog_title = get_bloginfo('name');
@@ -129,7 +151,7 @@ function print_meta_tags() {
 	$nfog_url = get_bloginfo('url');
 	$nfog_descr = get_bloginfo('description');
 	$nfog_img = 'no';	
-	if ( $options['defaultimg'] && $options['defaultimg'] !== '' ):
+	if ( isset( $options['defaultimg'] ) && $options['defaultimg'] !== '' ):
 		$nfog_img = $options['defaultimg'];
 	endif;
 	$no_img_msg = '<!-- No Default Image set -->';
@@ -198,9 +220,7 @@ function print_meta_tags() {
 }
 
 // enqueue scripts
-function admin_nf_scripts() {
-	wp_enqueue_script( 'nfadminjs' );
-}
+function admin_nf_scripts() {}
 
 // enqueue styles
 function admin_nf_styles() {
@@ -218,6 +238,7 @@ function print_donate_button() {
 }
 
 add_action('admin_init', 'nf_og_options_init' );
+add_action('admin_init', 'nf_og_update_files' );
 add_action( 'admin_menu', 'nf_og_menu_item' );
 add_action( 'wp_head', 'print_meta_tags' );
 register_deactivation_hook( __FILE__, 'nf_og_options_undo' );
